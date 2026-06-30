@@ -132,6 +132,8 @@
   .bname{font-weight:700;font-size:14.5px}
   .booth.done .bname{text-decoration:line-through;color:var(--muted-foreground)}
   .bwhy{font-size:12px;color:var(--muted-foreground);margin-top:2px}
+  .bstars{color:var(--gold);font-weight:700;letter-spacing:1px;margin-left:4px}
+  .bscore{font-size:11px;color:var(--muted-foreground);margin-top:4px;font-variant-numeric:tabular-nums}
   .bnum{margin-top:8px;display:flex;gap:8px}
   .bnum input{flex:0 0 92px;font-size:13px;padding:7px 9px}
   .bnum textarea{flex:1;font-size:13px;padding:7px 9px;resize:vertical;min-height:36px}
@@ -207,7 +209,7 @@
 <!-- BOOTHS -->
 <section id="booths">
   <h2>Booth hit-list <span id="bcount" style="color:var(--ok)"></span></h2>
-  <p class="muted" style="margin:0 0 6px">Tap box when visited. Booth #s aren't published — fill on the floor. Saves on this phone.</p>
+  <p class="muted" style="margin:0 0 6px">Ranked by ★ = relevance×2 + topic-heat + company-tier. Tap box when visited; booth #s fill on the floor (saves on this phone).</p>
   <div class="card" id="boothBody" style="padding:4px 14px"></div>
   <button class="btn" onclick="exportBooths()">📋 Copy booths as Markdown</button>
   <button class="btn sec" onclick="resetBooths()">Reset checklist</button>
@@ -303,34 +305,35 @@ const DAYS=[
       ['3:45','Agents Without Code','Philipp Schmid, DeepMind'],['4:50','Closing Keynote','Garry Tan, YC']]},
 ];
 
+// ★ = 0.5·relevance + 0.25·company(tier) + 0.25·topic-heat  (your "relevance-led" weighting)
 const BOOTHS=[
- ['1','Together AI','pl','On-prem open-model infra → sovereignty/composable'],
- ['1','Braintrust','pl','Eval platform = your Opus review card'],
- ['1','Arize','pl','Eval + observability / LLM-judge'],
- ['1','OpenAI','lab','Frontier-as-checker, open-weights roadmap'],
- ['1','Google DeepMind','lab','Frontier + on-prem licensing'],
- ['1','zAI','lab','GLM-5.2 open weights, on-prem license'],
- ['1','Sonar','pl','Code-quality / review harness'],
- ['1','Qodo','pl','Agentic code review harness'],
- ['2','Fireworks','gd','Open-model serving cost/latency'],
- ['2','Baseten','gd','Dedicated inference endpoints'],
- ['2','Modal','sv','Serverless GPU / cold-start'],
- ['2','Nebius','gd','GPU cloud for self-host'],
- ['2','RunPod','gd','Cheap dedicated GPU serving'],
- ['2','OpenRouter','sv','Multi-model router = composable layer'],
- ['2','Weights & Biases','gd','Eval data / experiment tracking'],
- ['2','Snorkel','gd','Labeling → build the eval-set moat'],
- ['2','LangChain','gd','Orchestration vs your pipeline'],
- ['2','LlamaIndex','gd','Retrieval / agent framework'],
- ['2','Temporal','gd','Durable agent workflows'],
- ['2','Warp','gd','Self-improving agent factory'],
- ['2','Factory','gd','Coding-agent harness'],
- ['2','Cognition','sv','Devin — coding-agent intel'],
- ['3','Optiver','gd','Finance agents (Finance KB)'],
- ['3','Bloomberg LP','sv','Finance data agents'],
- ['3','PayPal','pl','Agent-initiated payments'],
- ['3','Circle','gd','Stablecoin / agent commerce'],
- ['X','Anthropic staff (no booth)','lab','Catch at side event / networking night'],
+ {n:'Together AI',tier:'platinum',r:3,t:2.5,why:'On-prem open-model infra → sovereignty/composable'},
+ {n:'zAI',tier:'lab',r:3,t:3,why:'GLM-5.2 open weights, on-prem license'},
+ {n:'Braintrust',tier:'platinum',r:3,t:2,why:'Eval platform = your Opus review card'},
+ {n:'Arize',tier:'platinum',r:3,t:2,why:'Eval + observability / LLM-judge'},
+ {n:'Sonar',tier:'platinum',r:2.5,t:3,why:'Code-quality / review harness'},
+ {n:'Qodo',tier:'platinum',r:2.5,t:3,why:'Agentic code review harness'},
+ {n:'OpenAI',tier:'lab',r:2,t:3,why:'Frontier-as-checker, open-weights roadmap'},
+ {n:'Fireworks',tier:'gold',r:2.5,t:2.5,why:'Open-model serving cost/latency'},
+ {n:'Baseten',tier:'gold',r:2.5,t:2.5,why:'Dedicated inference endpoints'},
+ {n:'OpenRouter',tier:'supporting',r:2.5,t:2.5,why:'Multi-model router = composable layer'},
+ {n:'Warp',tier:'gold',r:2,t:3,why:'Self-improving agent factory'},
+ {n:'Google DeepMind',tier:'lab',r:1.5,t:3,why:'Frontier + on-prem licensing'},
+ {n:'RunPod',tier:'gold',r:2,t:2.5,why:'Cheap dedicated GPU serving'},
+ {n:'Nebius',tier:'gold',r:2,t:2.5,why:'GPU cloud for self-host'},
+ {n:'Modal',tier:'silver',r:2,t:2.5,why:'Serverless GPU / cold-start'},
+ {n:'Weights & Biases',tier:'gold',r:2,t:2,why:'Eval data / experiment tracking'},
+ {n:'Snorkel',tier:'gold',r:2,t:2,why:'Labeling → build the eval-set moat'},
+ {n:'Optiver',tier:'gold',r:2,t:2,why:'Finance agents (Finance KB)'},
+ {n:'Temporal',tier:'gold',r:1.5,t:3,why:'Durable agent workflows (harness)'},
+ {n:'Factory',tier:'gold',r:1.5,t:3,why:'Coding-agent harness'},
+ {n:'LangChain',tier:'gold',r:1.5,t:2.5,why:'Orchestration vs your pipeline'},
+ {n:'Cognition',tier:'silver',r:1.5,t:2.5,why:'Devin — coding-agent intel'},
+ {n:'PayPal',tier:'platinum',r:1,t:2.5,why:'Agent-initiated payments'},
+ {n:'LlamaIndex',tier:'gold',r:1.5,t:1.5,why:'Retrieval / agent framework'},
+ {n:'Circle',tier:'gold',r:1,t:2.5,why:'Stablecoin / agent commerce'},
+ {n:'Bloomberg LP',tier:'supporting',r:1.5,t:2,why:'Finance data agents'},
+ {n:'Anthropic staff (no booth)',tier:'lab',special:true,why:'Catch at side event / networking night'},
 ];
 
 const QA=[
@@ -344,7 +347,10 @@ const QA=[
 ];
 
 const TAGLABEL={stage:'Stage',booth:'Booth',food:'Lunch',net:'Network',side:'Side',expo:'Expo'};
-const TIER={pl:['PLATINUM','pl'],gd:['GOLD','gd'],lab:['LAB','lab'],sv:['SILVER','sv']};
+const TIER={lab:['LAB','lab',3],presenting:['PRESENTING','lab',3],platinum:['PLATINUM','pl',2.5],gold:['GOLD','gd',2],silver:['SILVER','sv',1.5],supporting:['SUPPORTING','sv',0.5]};
+function boothScore(b){return 0.5*b.r+0.25*TIER[b.tier][2]+0.25*b.t;}
+function boothStars(s){return s>=2.55?3:s>=2.15?2:1;}
+function half(n){return n%1?Math.floor(n)+'½':''+n;}
 const store=JSON.parse(localStorage.getItem('aiewf2026')||'{}');
 function save(){localStorage.setItem('aiewf2026',JSON.stringify(store))}
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -423,11 +429,16 @@ document.getElementById('stSearch').oninput=e=>{stQuery=e.target.value;renderSta
 /* ---------- BOOTHS ---------- */
 function renderBooths(){
   const el=document.getElementById('boothBody');el.innerHTML='';let done=0;
-  BOOTHS.forEach((b,i)=>{const key='b'+i,st=store[key]||{};if(st.done)done++;
-    const [tl,tc]=TIER[b[2]]||['',''];const tier=b[0]==='X'?'':`<span class="pill ${tc}">${tl}</span>`;
-    const prio=b[0]==='X'?'':`<span class="pill sv">T${b[0]}</span>`;
+  const ranked=BOOTHS.filter(b=>!b.special).sort((a,b)=>boothScore(b)-boothScore(a));
+  const order=[...ranked,...BOOTHS.filter(b=>b.special)];
+  order.forEach(b=>{const key='b_'+b.n,st=store[key]||{};if(st.done)done++;
+    const [tl,tc,C]=TIER[b.tier];const tier=`<span class="pill ${tc}">${tl}</span>`;
+    let head,score='';
+    if(b.special){head=tier;}
+    else{const ns=boothStars(boothScore(b));head=`<span class="bstars">${'★'.repeat(ns)}</span>${tier}`;
+      score=`<div class="bscore">rel ${half(b.r)} · topic ${half(b.t)} · co ${half(C)}</div>`;}
     const div=document.createElement('div');div.className='booth'+(st.done?' done':'');
-    div.innerHTML=`<div class="cb">✓</div><div class="bmain"><div class="bname">${b[1]}${prio}${tier}</div><div class="bwhy">${b[3]}</div>
+    div.innerHTML=`<div class="cb">✓</div><div class="bmain"><div class="bname">${b.n} ${head}</div><div class="bwhy">${b.why}</div>${score}
       <div class="bnum"><input placeholder="Booth #" value="${esc(st.num)}" data-k="${key}" data-f="num"><textarea placeholder="Notes / who / follow-up" data-k="${key}" data-f="note">${esc(st.note)}</textarea></div></div>`;
     div.querySelector('.cb').onclick=()=>{store[key]=store[key]||{};store[key].done=!store[key].done;save();renderBooths();};
     el.appendChild(div);});
@@ -437,10 +448,10 @@ function renderBooths(){
   document.getElementById('bcount').textContent=done+'/'+BOOTHS.length;
 }
 renderBooths();
-function resetBooths(){if(confirm('Clear all booth checks & notes?')){BOOTHS.forEach((b,i)=>delete store['b'+i]);save();renderBooths();}}
+function resetBooths(){if(confirm('Clear all booth checks & notes?')){BOOTHS.forEach(b=>delete store['b_'+b.n]);save();renderBooths();}}
 function copy(md,msg){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(md).then(()=>alert(msg)).catch(()=>prompt('Copy:',md));}else prompt('Copy:',md);}
 function exportBooths(){let md='# AIEWF 2026 booth notes\n\n';let any=false;
-  BOOTHS.forEach((b,i)=>{const st=store['b'+i]||{};if(st.done||st.num||st.note){any=true;md+=`- [${st.done?'x':' '}] **${b[1]}**`+(st.num?` (booth ${st.num})`:'')+(st.note?` — ${st.note}`:'')+'\n';}});
+  BOOTHS.forEach(b=>{const st=store['b_'+b.n]||{};if(st.done||st.num||st.note){any=true;md+=`- [${st.done?'x':' '}] **${b.n}**`+(st.num?` (booth ${st.num})`:'')+(st.note?` — ${st.note}`:'')+'\n';}});
   if(!any)md+='_(nothing recorded yet)_\n';copy(md,'Booths copied! Paste into sources/inbox/aiewf-booth-notes.md');}
 
 /* ---------- PEOPLE: contacts + notes ---------- */
