@@ -134,6 +134,12 @@
   .bwhy{font-size:12px;color:var(--muted-foreground);margin-top:2px}
   .bstars{color:var(--gold);font-weight:700;letter-spacing:1px;margin-left:4px}
   .bscore{font-size:11px;color:var(--muted-foreground);margin-top:4px;font-variant-numeric:tabular-nums}
+  .bdesc{font-size:13px;line-height:1.5;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)}
+  .bdesc b{font-weight:500}
+  .bname{cursor:pointer}
+  .bname .cv{color:var(--muted-foreground);font-weight:400;margin-left:4px;font-size:12px}
+  .pwhy{font-size:11.5px;color:var(--tag-stage);margin-top:2px}
+  .stwhy{font-size:11.5px;color:var(--muted-foreground);margin-top:3px}
   .bnum{margin-top:8px;display:flex;gap:8px}
   .bnum input{flex:0 0 92px;font-size:13px;padding:7px 9px}
   .bnum textarea{flex:1;font-size:13px;padding:7px 9px;resize:vertical;min-height:36px}
@@ -194,6 +200,7 @@
 <!-- PLAN -->
 <section id="plan">
   <div class="seg" id="daySeg"></div>
+  <p class="muted" style="margin:2px 2px 0">★/★★ marks a recommended expo-stage talk (relevance + topic + company); "why" line says what it's for. Tap Stages for the full score.</p>
   <div id="planBody"></div>
 </section>
 
@@ -202,7 +209,7 @@
   <div class="seg" id="stDaySeg"></div>
   <div class="search"><input id="stSearch" placeholder="Search expo-stage talks…" autocomplete="off"></div>
   <div class="chips" id="stChips"></div>
-  <p class="muted" style="margin-top:0">All expo-stage talks (included in your pass). ★ = ScatterAI pick.</p>
+  <p class="muted" style="margin-top:0">All expo-stage talks (included in your pass). ★/★★ = ScatterAI pick — score = relevance×2 + topic-heat + speaker's company. Tap "★ Picks" to filter.</p>
   <div class="card" id="stBody" style="padding:4px 14px"></div>
 </section>
 
@@ -247,8 +254,28 @@
 <script>
 const EXPO={"tue": [{"t": "10:45a-11:05a", "s": "NE", "ti": "Every AI company is accidentally building a bank.", "sp": "Dor Sasson"}, {"t": "10:45a-11:05a", "s": "NW", "ti": "The Enterprise Agentic Gap: When Developer-Level AI Tools Hit Millions of Lines", "sp": "Dan Adler"}, {"t": "10:45a-11:05a", "s": "SE", "ti": "Agentic Search for Coding Agents", "sp": "Jakub Hojsan"}, {"t": "10:45a-11:05a", "s": "SW", "ti": "How PayPal Enterprise Payments handles agent-initiated payments across ChatGPT and Google AI Mode", "sp": "Sam Parsons"}, {"t": "11:10a-11:30a", "s": "NE", "ti": "Give your coding agents the power of turbogrep!", "sp": "Owen Halpert"}, {"t": "11:10a-11:30a", "s": "NW", "ti": "Actionable Knowledge For Agents With Context Graphs", "sp": "Will Lyon"}, {"t": "11:10a-11:30a", "s": "SE", "ti": "Agents, codebases, and teams: what it actually takes to ship together", "sp": "Aditya Khandelwal"}, {"t": "11:10a-11:30a", "s": "SW", "ti": "Kimchi on the Expo Session", "sp": ""}, {"t": "11:40a-12:00p", "s": "NE", "ti": "Your Stack Has a Latency Problem You Can’t See", "sp": ""}, {"t": "11:40a-12:00p", "s": "NW", "ti": "Agentic vs. Vector Search: An Eval-Driven Approach to Coding Agent Performance", "sp": "Jess Wang"}, {"t": "11:40a-12:00p", "s": "SE", "ti": "Would your AI agent get the job? A performance review framework for enterprise agents", "sp": "Andreea Pleşea, Dan Bălăceanu"}, {"t": "11:40a-12:00p", "s": "SW", "ti": "Agents Don't Have Coworkers, They Have Hostages", "sp": "Gabriel Martinez"}, {"t": "12:05p-12:25p", "s": "NE", "ti": "Your Agent Is Lying to You About Whether It Worked", "sp": "Dat Ngo"}, {"t": "12:05p-12:25p", "s": "NW", "ti": "Why building building agent quality platforms is hard.", "sp": "Hossein Niazmandi"}, {"t": "12:05p-12:25p", "s": "SE", "ti": "Self-Improving Agents That Teach the Company Back", "sp": "Rafal Wilinski"}, {"t": "12:05p-12:25p", "s": "SW", "ti": "Can LLMs write fast multi-GPU kernels? We built a benchmark to find out.", "sp": "Simran Arora"}, {"t": "1:30p-1:50p", "s": "NE", "ti": "Every Agent, Everywhere, All at Once", "sp": "Vlad Luzin"}, {"t": "1:30p-1:50p", "s": "NW", "ti": "Deepmind Expo Session 1", "sp": ""}, {"t": "1:30p-1:50p", "s": "SE", "ti": "Stop prompting", "sp": "Greg Pstrucha"}, {"t": "1:30p-1:50p", "s": "SW", "ti": "Designing Evals That Earn User Trust", "sp": "Felipe Blanes"}, {"t": "1:55p-2:15p", "s": "NE", "ti": "Who Approved That MCP Server? Governing the Tool Layer", "sp": "Jim Clark"}, {"t": "1:55p-2:15p", "s": "NW", "ti": "Voice Agents Are Mostly Invisible. Here's How to See Them.", "sp": "Fuad Ali"}, {"t": "1:55p-2:15p", "s": "SE", "ti": "Deploying browser agents at scale", "sp": "Derek Meegan"}, {"t": "1:55p-2:15p", "s": "SW", "ti": "what we learned by analyzing 1M AI generated PRs", "sp": ""}, {"t": "2:25p-2:45p", "s": "NE", "ti": "Beyond Golden Signals: Monitoring in the Age of GenAI", "sp": "Marina Petzel"}, {"t": "2:25p-2:45p", "s": "NW", "ti": "Build agents fast with GitHub Copilot (from idea to working app)", "sp": "Idan Gazit"}, {"t": "2:25p-2:45p", "s": "SE", "ti": "Continuous Engineering: Software Development for the Age of Agents", "sp": ""}, {"t": "2:50p-3:10p", "s": "NE", "ti": "6 Pillars of an Agentic Harness That Fixes Production Incidents", "sp": "Varun Krovvidi"}, {"t": "2:50p-3:10p", "s": "NW", "ti": "Video Discovery for Agentic World-Model Training", "sp": ""}, {"t": "2:50p-3:10p", "s": "SE", "ti": "Self-Driving Production: AI Wrote your Code. AI Should Fix It, Too", "sp": ""}, {"t": "2:50p-3:10p", "s": "SW", "ti": "Baseten Expo Session", "sp": ""}, {"t": "3:20p-3:40p", "s": "NW", "ti": "From Context to Memory: Your Agents Need a Real Memory Layer", "sp": "Anders Swanson"}, {"t": "3:20p-3:40p", "s": "SE", "ti": "From raw documents to AI-ready data", "sp": "Leo Platzer"}, {"t": "3:20p-3:40p", "s": "SW", "ti": "Running a 20T-Token Data Pipeline: Infrastructure Lessons from Production", "sp": "Bogdan Gaza"}, {"t": "3:45p-4:05p", "s": "NE", "ti": "How We Built the Airbyte Agent MCP Server and CLI", "sp": "Cam Kennedy"}, {"t": "3:45p-4:05p", "s": "NW", "ti": "From Chatbots to Agents: How Reducto builds for Agent Experience to Enable Real Work", "sp": "Abhi Arya"}, {"t": "3:45p-4:05p", "s": "SE", "ti": "AI Enablement at Automattic: How a Remote Company Builds AI Fluency", "sp": "Em Shreve"}, {"t": "3:45p-4:05p", "s": "SW", "ti": "Towards Reliable Financial Agents: How a 4B Model Outsmarted a 235B Giant", "sp": "Charlie Dickens"}], "wed": [{"t": "10:45a-11:05a", "s": "NE", "ti": "Circle Expo Session", "sp": ""}, {"t": "10:45a-11:05a", "s": "NW", "ti": "AI Engineering & Governance 2026 Trends", "sp": "Wallon Walusayi"}, {"t": "10:45a-11:05a", "s": "SE", "ti": "Redesigning how software gets built", "sp": "TBD — Sonar"}, {"t": "10:45a-11:05a", "s": "SW", "ti": "Why AI Didn't Actually Make You Ship Faster", "sp": "Gabriel Spencer-Harper"}, {"t": "11:10a-11:30a", "s": "NE", "ti": "Harnessing Agents: The Durable Runtime for Dynamic Workflows", "sp": "Viren Baraiya"}, {"t": "11:10a-11:30a", "s": "NW", "ti": "AI-Assisted Engineering: 5 Trends We're Seeing From 500+ Organizations", "sp": "Justin Reock"}, {"t": "11:10a-11:30a", "s": "SE", "ti": "FDE Playbook: Build an AI Support Agent and Give It a Voice", "sp": "Matt Lawler"}, {"t": "11:10a-11:30a", "s": "SW", "ti": "The Death of Keyword Search and the Rise of Agent-Readable Catalogs", "sp": "Nixon Dinh"}, {"t": "11:40a-12:00p", "s": "NE", "ti": "Fault-Tolerant Training at Scale: Making Hardware Failures a Non-Event", "sp": ""}, {"t": "11:40a-12:00p", "s": "NW", "ti": "How to generate mergeable code with a context engine", "sp": "Peter Werry"}, {"t": "11:40a-12:00p", "s": "SE", "ti": "AI agents don't read your policy docs. They hit your APIs.", "sp": ""}, {"t": "11:40a-12:00p", "s": "SW", "ti": "The Next Run Should Be Better", "sp": "Jake Broekhuizen"}, {"t": "12:05p-12:25p", "s": "NE", "ti": "Your agent architecture has a half-life of 6 months", "sp": "Dan Farrelly"}, {"t": "12:05p-12:25p", "s": "NW", "ti": "From Stateless to Stateful: Orchestrating Real-Time Voice & Messaging Agents with Twilio and Amazon Bedrock", "sp": "Rishab Kumar"}, {"t": "12:05p-12:25p", "s": "SE", "ti": "Prompt, Memory, Weights: The Architecture Decisions Most AI Teams Make by Accident", "sp": "Anant Srivastava"}, {"t": "12:05p-12:25p", "s": "SW", "ti": "Harnessing Collective Agent Intelligence for Open Science", "sp": "James Zou"}, {"t": "1:30p-1:50p", "s": "NW", "ti": "Surviving Your Own Velocity: How VS Code Ships Weekly with 40 People", "sp": "Harald Kirschner"}, {"t": "1:30p-1:50p", "s": "SE", "ti": "Daytona Expo 1", "sp": ""}, {"t": "1:30p-1:50p", "s": "SW", "ti": "Deepmind Expo Session 3", "sp": ""}, {"t": "1:55p-2:15p", "s": "NE", "ti": "Edge-Native AI: Building Ultra-Fast Agents and MCP Servers with Spin", "sp": "Thorsten Hans"}, {"t": "1:55p-2:15p", "s": "NW", "ti": "Why your company needs a context graph, and how to build it", "sp": "Gil Feig"}, {"t": "1:55p-2:15p", "s": "SE", "ti": "Natively Multimodal from Step Zero", "sp": ""}, {"t": "1:55p-2:15p", "s": "SW", "ti": "Warp: Building Self-Improving Agent Software Factories", "sp": "Suraj Gupta"}, {"t": "2:25p-2:45p", "s": "NE", "ti": "Power agents with Microsoft IQ", "sp": "Ronak Chokshi"}, {"t": "2:25p-2:45p", "s": "NW", "ti": "Beyond Code Generation: API Context for Agentic Engineering", "sp": "Kamalakannan Nandagopal"}, {"t": "2:25p-2:45p", "s": "SE", "ti": "Lightrun Expo Session", "sp": ""}, {"t": "2:25p-2:45p", "s": "SW", "ti": "Latency Is a Budget. Humanlike Is the Goal.", "sp": "Jesse Hall"}, {"t": "2:50p-3:10p", "s": "NE", "ti": "Inference performance as a competitive advantage", "sp": "Alex Campos, Yunmo Koo"}, {"t": "2:50p-3:10p", "s": "NW", "ti": "Building an Agent Harness for the Business, Not the Builder", "sp": "Garrett Galow"}, {"t": "2:50p-3:10p", "s": "SE", "ti": "Continuous Offensive Security the only approach in an agent-first world", "sp": "Eli Cohen"}, {"t": "2:50p-3:10p", "s": "SW", "ti": "The Frontier Is Coming Home", "sp": "Dylan Couzon"}, {"t": "3:20p-3:40p", "s": "NE", "ti": "The Self-Improving OSS Agent Stack", "sp": ""}, {"t": "3:20p-3:40p", "s": "NW", "ti": "AI Applications in a flash! No Dev Ops. Just code.", "sp": "Dean Quiñanola"}, {"t": "3:20p-3:40p", "s": "SE", "ti": "Vibe Code Safely: Introducing Gadgets", "sp": ""}, {"t": "3:20p-3:40p", "s": "SW", "ti": "The Infinite Context Window Is a Myth: Context Engineering for AI Agents", "sp": "Morgan Willis"}, {"t": "3:45p-4:05p", "s": "NE", "ti": "Modular: Taming the AI Hardware Cambrian Explosion", "sp": "Abdul Dakkak"}, {"t": "3:45p-4:05p", "s": "NW", "ti": "Building on the Codex Harness", "sp": "Dominik Kundel"}, {"t": "3:45p-4:05p", "s": "SE", "ti": "Ray Actors, Vision Tokens, and the GIL: Engineering an SFT Data Pipeline That Keeps GPUs Busy", "sp": "Tarun Sunkaraneni"}, {"t": "3:45p-4:05p", "s": "SW", "ti": "Stop Renting Intelligence: The Train-to-Deploy Loop for Specialized AI", "sp": "Jetashree Ravi"}], "thu": [{"t": "10:45a-11:05a", "s": "NE", "ti": "AI Engineering & Governance 2026 Trends", "sp": "Wallon Walusayi"}, {"t": "10:45a-11:05a", "s": "NW", "ti": "Your Agent Can't Tell If It's Right", "sp": "Willem Pienaar"}, {"t": "10:45a-11:05a", "s": "SE", "ti": "Vector Isn't Enough: Hybrid Search & Retrieval for AI Engineers", "sp": ""}, {"t": "10:45a-11:05a", "s": "SW", "ti": "No, That's Not a Software Factory", "sp": "Ryan Cooke"}, {"t": "11:10a-11:30a", "s": "NE", "ti": "Beyond RAG: See a relational context engine reduce token burn", "sp": "Brandon Waselnuk"}, {"t": "11:10a-11:30a", "s": "SE", "ti": "Your AI Agent Has No Nervous System", "sp": "Matt Gibiec"}, {"t": "11:10a-11:30a", "s": "SW", "ti": "The Lethal Trifecta Is Already on Your Developers' Laptops", "sp": "Michael Patterson"}, {"t": "11:40a-12:00p", "s": "NE", "ti": "The Art of Building Verifiers for Computer Use Agents", "sp": "Miguel González Fernández, Corby Rosset"}, {"t": "11:40a-12:00p", "s": "NW", "ti": "Seeing the Plumbing: Profiling vLLM Speculative Decoding on NVIDIA Blackwell", "sp": "Sheilah Kirui"}, {"t": "11:40a-12:00p", "s": "SE", "ti": "Building agents is trivial now, context is the next frontier", "sp": "Jeff Ng"}, {"t": "11:40a-12:00p", "s": "SW", "ti": "Voice is the universal interface", "sp": "Kwindla Kramer, Neil Zeghidour"}, {"t": "12:05p-12:25p", "s": "NE", "ti": "The Missing Layer in Agentic AI", "sp": "Giedrius Steimantas"}, {"t": "12:05p-12:25p", "s": "NW", "ti": "While You Were Generating: The Verification Gap Nobody Talked About", "sp": "Ali Adl-Tabatabai"}, {"t": "12:05p-12:25p", "s": "SE", "ti": "Agents That Forge Their Own Tools: Self-Modifying AI in the Wild", "sp": "Sandhya Subramani"}, {"t": "12:05p-12:25p", "s": "SW", "ti": "Move fast and (don’t) break things", "sp": "Ben Dicken"}, {"t": "1:30p-1:50p", "s": "NE", "ti": "Trust, But Verify: Human-in-the-Loop for Agents That Actually Matter", "sp": "Michael Liendo"}, {"t": "1:30p-1:50p", "s": "NW", "ti": "YOLO Mode, Safely: microVM Sandboxes for Any Agent", "sp": "Eric Jia"}, {"t": "1:30p-1:50p", "s": "SE", "ti": "Video Discovery for Agentic World-Model Training", "sp": ""}, {"t": "1:30p-1:50p", "s": "SW", "ti": "Your Model is Private. Your System Isn't.", "sp": "Joshua Mo"}, {"t": "1:55p-2:15p", "s": "NE", "ti": "Dash0 Add-On Expo Session", "sp": ""}, {"t": "1:55p-2:15p", "s": "NW", "ti": "MCP doesn’t suck — your agent does", "sp": "Jan Curn"}, {"t": "1:55p-2:15p", "s": "SE", "ti": "Everyone talks about document search, but what about results?", "sp": "George He"}, {"t": "1:55p-2:15p", "s": "SW", "ti": "From Agent Prototype to Production: Evaluation-Led Development in Microsoft Foundry", "sp": "Sharmila Chockalingam"}, {"t": "2:25p-2:45p", "s": "NE", "ti": "Optimizing Open Models for Production Grade Inference", "sp": "Sujee Maniyam, Dylan Bristot"}, {"t": "2:25p-2:45p", "s": "SE", "ti": "The Human Is an Async API", "sp": "Melanie Warrick"}, {"t": "2:25p-2:45p", "s": "SW", "ti": "[Braintrust Expo Session 3]", "sp": ""}, {"t": "2:50p-3:10p", "s": "NE", "ti": "Harness Engineering: The New Core Skill for Agentic Developers", "sp": "Dru Knox"}, {"t": "2:50p-3:10p", "s": "SE", "ti": "The Software Factory", "sp": ""}, {"t": "2:50p-3:10p", "s": "SW", "ti": "Small Claws Are Beautiful: Edge Agents with NanoClaw, Raspberry Pi, and Graph Memory", "sp": "Jeremy Adams"}, {"t": "3:20p-3:40p", "s": "NE", "ti": "Agent Memory Is a Solved Problem. Agent Learning Is Not.", "sp": "Karthik Ranganathan, Heather Downing"}, {"t": "3:20p-3:40p", "s": "NW", "ti": "Deepmind Expo Session 2", "sp": ""}, {"t": "3:20p-3:40p", "s": "SE", "ti": "An AI Future Without the Lock-In", "sp": "Remy Guercio"}, {"t": "3:20p-3:40p", "s": "SW", "ti": "Replicated Expo Session", "sp": ""}, {"t": "3:45p-4:05p", "s": "NE", "ti": "Taking Reinforcement Learning Cross Datacenter", "sp": "Adam Azzam"}, {"t": "3:45p-4:05p", "s": "NW", "ti": "Dashboards are Dead", "sp": "Sarah Simionescu"}]};
 // ★ picks: substrings that mark a ScatterAI-pick expo talk
-const TOP=["Reliable Financial Agents","The Frontier Is Coming Home","Verification Gap"];
-const PICKS=["Self-Improving Agents That Teach","Your Agent Is Lying","6 Pillars of an Agentic Harness","Who Approved That MCP","From Context to Memory","Stop Renting Intelligence","Warp: Building Self-Improving","Prompt, Memory, Weights","Inference performance as a competitive","Building on the Codex Harness","Your Agent Can't Tell If It's Right","Harness Engineering: The New Core","Agent Memory Is a Solved","Agents That Forge Their Own Tools","Optimizing Open Models","Without the Lock-In"];
+// stage-talk scoring — same formula as booths: 0.5·rel + 0.25·company + 0.25·topic. key = substring of the talk title.
+const STSCORE=[
+ ["Your Agent Is Lying",{r:2.5,t:2,co:2.5,why:'eval/observability = your review-card'}],
+ ["Self-Improving Agents That Teach",{r:2.5,t:2.5,co:1.5,why:'self-improving learning loop'}],
+ ["Who Approved That MCP",{r:2,t:2.5,co:1.5,why:'tool-layer governance for your pipeline'}],
+ ["6 Pillars of an Agentic Harness",{r:2.5,t:3,co:1.5,why:'harness engineering, concrete'}],
+ ["From Context to Memory",{r:2,t:2.5,co:1.5,why:'context/memory layer'}],
+ ["Reliable Financial Agents",{r:3,t:2.5,co:1.5,why:'small model beats giant — sovereignty + Finance KB'}],
+ ["Prompt, Memory, Weights",{r:2.5,t:2.5,co:1.5,why:'sovereignty architecture choices'}],
+ ["Self-Improving Agent Software Factories",{r:2,t:3,co:2,why:'self-improving software factory'}],
+ ["The Frontier Is Coming Home",{r:3,t:2.5,co:1.5,why:'on-prem frontier = your thesis'}],
+ ["competitive advantage",{r:2,t:2.5,co:1.5,why:'inference cost as edge'}],
+ ["Stop Renting Intelligence",{r:2.5,t:2.5,co:1.5,why:'train-to-deploy specialized model'}],
+ ["Building on the Codex Harness",{r:2,t:3,co:3,why:'OpenAI harness internals'}],
+ ["Your Agent Can't Tell If It's Right",{r:2.5,t:2,co:1.5,why:'verification gap = review card'}],
+ ["Verification Gap",{r:3,t:2,co:1.5,why:'the verification gap — your review card'}],
+ ["Optimizing Open Models",{r:2.5,t:2.5,co:1.5,why:'open-model production inference'}],
+ ["Harness Engineering: The New Core",{r:2.5,t:3,co:1.5,why:'core harness skill'}],
+ ["Agent Memory",{r:2,t:2.5,co:2,why:'agent learning loop'}],
+ ["Agents That Forge Their Own Tools",{r:2,t:2.5,co:1.5,why:'self-modifying / self-improving'}],
+ ["Without the Lock-In",{r:2.5,t:2.5,co:1.5,why:'avoid lock-in — sovereignty'}],
+];
 
 const DAYS=[
  {id:'tue',label:'Tue 6/30',date:'2026-06-30',theme:'Software Factories',
@@ -258,9 +285,9 @@ const DAYS=[
    {t:'12:05',tag:'stage',d:'NE — Your Agent Is Lying About Whether It Worked (Arize). <i>alt SE: Self-Improving Agents</i>'},
    {t:'12:25',tag:'food',d:'<b>Lunch</b> (1st fl) — work the crowd, hallway-catch lab/Anthropic staff.'},
    {t:'1:55',tag:'stage',d:'NE — Who Approved That MCP Server? (tool-layer governance)'},
-   {t:'2:50',tag:'stage',d:'NE — 6 Pillars of an Agentic Harness ★'},
+   {t:'2:50',tag:'stage',d:'NE — 6 Pillars of an Agentic Harness'},
    {t:'3:20',tag:'stage',d:'NW — From Context to Memory'},
-   {t:'3:45',tag:'stage',d:'<span class="top">SW — Reliable Financial Agents: 4B beats 235B ★ TOP</span>'},
+   {t:'3:45',tag:'stage',d:'SW — Reliable Financial Agents: 4B beats 235B'},
    {t:'4:05',tag:'booth',d:'Booth block: Together AI → Braintrust → Arize → Sonar / Qodo'},
    {t:'5:00',tag:'net',d:'<b>Onsite Networking Night</b> (expo floor) — labs + finance + Anthropic-in-the-wild'},
    {t:'7:30',tag:'side',d:'<i>(optional, RSVP)</i> Optiver: The Agentic SDLC Loop — off-site'},
@@ -276,7 +303,7 @@ const DAYS=[
    {t:'12:05',tag:'stage',d:'SE — Prompt, Memory, Weights (architecture decisions)'},
    {t:'12:25',tag:'food',d:'<b>Lunch</b> + booth follow-ups.'},
    {t:'1:55',tag:'stage',d:'SW — Warp: Self-Improving Agent Software Factories'},
-   {t:'2:50',tag:'stage',d:'<span class="top">SW — The Frontier Is Coming Home ★ TOP (on-prem)</span>'},
+   {t:'2:50',tag:'stage',d:'SW — The Frontier Is Coming Home (on-prem)'},
    {t:'3:20',tag:'stage',d:'NE — Inference as a Competitive Advantage'},
    {t:'3:45',tag:'stage',d:'SW — Stop Renting Intelligence: Train-to-Deploy. <i>alt NW: Codex Harness</i>'},
    {t:'4:05',tag:'booth',d:'Inference block: Fireworks / Baseten / Modal / Nebius / RunPod + OpenRouter'},
@@ -291,10 +318,10 @@ const DAYS=[
    {t:'~9:45',tag:'',d:'Arrive (Reg 8–1 only today).'},
    {t:'10:00',tag:'expo',d:'<b>Last-chance expo</b> (closes 4:30) — clear booths, grab contacts/demos.'},
    {t:'10:45',tag:'stage',d:'NW — Your Agent Can\'t Tell If It\'s Right'},
-   {t:'12:05',tag:'stage',d:'<span class="top">NW — The Verification Gap Nobody Talked About ★ TOP</span>'},
+   {t:'12:05',tag:'stage',d:'NW — The Verification Gap Nobody Talked About'},
    {t:'12:25',tag:'food',d:'<b>Lunch</b> + final founder/lab conversations.'},
    {t:'2:25',tag:'stage',d:'NE — Optimizing Open Models for Production Inference'},
-   {t:'2:50',tag:'stage',d:'NE — Harness Engineering: The New Core Skill ★'},
+   {t:'2:50',tag:'stage',d:'NE — Harness Engineering: The New Core Skill'},
    {t:'3:20',tag:'stage',d:'NE — Agent Memory Solved, Learning Not. <i>alt SE: No Lock-In</i>'},
    {t:'3:45',tag:'booth',d:'Final Finance KB pass: Optiver / Bloomberg / PayPal / Circle'},
    {t:'4:30',tag:'expo',d:'Expo closes. (Closing keynotes + Startup Battlefield → YouTube)'},
@@ -307,33 +334,33 @@ const DAYS=[
 
 // ★ = 0.5·relevance + 0.25·company(tier) + 0.25·topic-heat  (your "relevance-led" weighting)
 const BOOTHS=[
- {n:'Together AI',tier:'platinum',r:3,t:2.5,why:'On-prem open-model infra → sovereignty/composable'},
- {n:'zAI',tier:'lab',r:3,t:3,why:'GLM-5.2 open weights, on-prem license'},
- {n:'Braintrust',tier:'platinum',r:3,t:2,why:'Eval platform = your Opus review card'},
- {n:'Arize',tier:'platinum',r:3,t:2,why:'Eval + observability / LLM-judge'},
- {n:'Sonar',tier:'platinum',r:2.5,t:3,why:'Code-quality / review harness'},
- {n:'Qodo',tier:'platinum',r:2.5,t:3,why:'Agentic code review harness'},
- {n:'OpenAI',tier:'lab',r:2,t:3,why:'Frontier-as-checker, open-weights roadmap'},
- {n:'Fireworks',tier:'gold',r:2.5,t:2.5,why:'Open-model serving cost/latency'},
- {n:'Baseten',tier:'gold',r:2.5,t:2.5,why:'Dedicated inference endpoints'},
- {n:'OpenRouter',tier:'supporting',r:2.5,t:2.5,why:'Multi-model router = composable layer'},
- {n:'Warp',tier:'gold',r:2,t:3,why:'Self-improving agent factory'},
- {n:'Google DeepMind',tier:'lab',r:1.5,t:3,why:'Frontier + on-prem licensing'},
- {n:'RunPod',tier:'gold',r:2,t:2.5,why:'Cheap dedicated GPU serving'},
- {n:'Nebius',tier:'gold',r:2,t:2.5,why:'GPU cloud for self-host'},
- {n:'Modal',tier:'silver',r:2,t:2.5,why:'Serverless GPU / cold-start'},
- {n:'Weights & Biases',tier:'gold',r:2,t:2,why:'Eval data / experiment tracking'},
- {n:'Snorkel',tier:'gold',r:2,t:2,why:'Labeling → build the eval-set moat'},
- {n:'Optiver',tier:'gold',r:2,t:2,why:'Finance agents (Finance KB)'},
- {n:'Temporal',tier:'gold',r:1.5,t:3,why:'Durable agent workflows (harness)'},
- {n:'Factory',tier:'gold',r:1.5,t:3,why:'Coding-agent harness'},
- {n:'LangChain',tier:'gold',r:1.5,t:2.5,why:'Orchestration vs your pipeline'},
- {n:'Cognition',tier:'silver',r:1.5,t:2.5,why:'Devin — coding-agent intel'},
- {n:'PayPal',tier:'platinum',r:1,t:2.5,why:'Agent-initiated payments'},
- {n:'LlamaIndex',tier:'gold',r:1.5,t:1.5,why:'Retrieval / agent framework'},
- {n:'Circle',tier:'gold',r:1,t:2.5,why:'Stablecoin / agent commerce'},
- {n:'Bloomberg LP',tier:'supporting',r:1.5,t:2,why:'Finance data agents'},
- {n:'Anthropic staff (no booth)',tier:'lab',special:true,why:'Catch at side event / networking night'},
+ {n:'Together AI',tier:'platinum',r:3,t:2.5,why:'On-prem open-model infra → sovereignty/composable',desc:'AI cloud for open-source models: fine-tune + fast dedicated inference (Llama, DeepSeek, Qwen) and trains its own. Your route to hosting/fine-tuning your own open model.'},
+ {n:'zAI',tier:'lab',r:3,t:3,why:'GLM-5.2 open weights, on-prem license',desc:'Z.ai (Zhipu) — Chinese frontier lab behind the open-weight GLM model family. Open weights you can self-host on-prem.'},
+ {n:'Braintrust',tier:'platinum',r:3,t:2,why:'Eval platform = your Opus review card',desc:'Eval + observability stack for LLM apps: datasets, scoring, experiments, prompt playground. The productized version of your Opus review-card.'},
+ {n:'Arize',tier:'platinum',r:3,t:2,why:'Eval + observability / LLM-judge',desc:'LLM/agent observability + evals (Phoenix OSS). Trace agents in production, run online evals, catch regressions.'},
+ {n:'Sonar',tier:'platinum',r:2.5,t:3,why:'Code-quality / review harness',desc:'SonarQube — code-quality & static analysis, now positioned as the quality gate for AI-generated code.'},
+ {n:'Qodo',tier:'platinum',r:2.5,t:3,why:'Agentic code review harness',desc:'Agentic code review + test generation (ex-CodiumAI). A quality layer over AI-written code.'},
+ {n:'OpenAI',tier:'lab',r:2,t:3,why:'Frontier-as-checker, open-weights roadmap',desc:'Frontier lab — GPT/o-series + the Codex coding agent. For you: frontier-as-checker and watch the open-weights / Codex-harness direction.'},
+ {n:'Fireworks',tier:'gold',r:2.5,t:2.5,why:'Open-model serving cost/latency',desc:'Fast inference + fine-tuning for open models (FireOptimizer). Cheap/fast serving of open-weight models.'},
+ {n:'Baseten',tier:'gold',r:2.5,t:2.5,why:'Dedicated inference endpoints',desc:'Model deployment/inference infra — dedicated autoscaling endpoints for open & custom models.'},
+ {n:'OpenRouter',tier:'supporting',r:2.5,t:2.5,why:'Multi-model router = composable layer',desc:'One API across 300+ models with routing, fallback and cost controls — the operational layer of your composable/council-of-models setup.'},
+ {n:'Warp',tier:'gold',r:2,t:3,why:'Self-improving agent factory',desc:'AI terminal + agent platform pitching "self-improving software factories" for coding workflows.'},
+ {n:'Google DeepMind',tier:'lab',r:1.5,t:3,why:'Frontier + on-prem licensing',desc:'Frontier lab behind Gemini. Research-to-production + enterprise/on-prem licensing.'},
+ {n:'RunPod',tier:'gold',r:2,t:2.5,why:'Cheap dedicated GPU serving',desc:'Cheap GPU cloud (on-demand + serverless) for training and inference. Affordable self-hosting of open models.'},
+ {n:'Nebius',tier:'gold',r:2,t:2.5,why:'GPU cloud for self-host',desc:'Full-stack GPU cloud / AI infrastructure (EU). Rent GPUs to self-host models.'},
+ {n:'Modal',tier:'silver',r:2,t:2.5,why:'Serverless GPU / cold-start',desc:'Serverless compute for AI — run inference/fine-tuning in Python with fast cold-starts, no infra to manage.'},
+ {n:'Weights & Biases',tier:'gold',r:2,t:2,why:'Eval data / experiment tracking',desc:'Experiment tracking + LLM evals (Weave), now part of CoreWeave. Build your eval datasets and runs.'},
+ {n:'Snorkel',tier:'gold',r:2,t:2,why:'Labeling → build the eval-set moat',desc:'Programmatic data labeling + eval-set creation — turn domain expertise into training/eval data.'},
+ {n:'Optiver',tier:'gold',r:2,t:2,why:'Finance agents (Finance KB)',desc:'Global quant trading firm applying AI agents in finance — relevant to your Finance KB.'},
+ {n:'Temporal',tier:'gold',r:1.5,t:3,why:'Durable agent workflows (harness)',desc:'Durable execution / workflow engine — reliable long-running agent orchestration (the harness runtime).'},
+ {n:'Factory',tier:'gold',r:1.5,t:3,why:'Coding-agent harness',desc:'Autonomous coding agents ("Droids") for end-to-end software development.'},
+ {n:'LangChain',tier:'gold',r:1.5,t:2.5,why:'Orchestration vs your pipeline',desc:'Agent framework + LangGraph (orchestration) + LangSmith (observability). Benchmark vs your hand-rolled pipeline.'},
+ {n:'Cognition',tier:'silver',r:1.5,t:2.5,why:'Devin — coding-agent intel',desc:'Maker of Devin, the autonomous software engineer (also Windsurf). Coding-agent SOTA intel.'},
+ {n:'PayPal',tier:'platinum',r:1,t:2.5,why:'Agent-initiated payments',desc:'Payments giant building agent-initiated / agentic commerce (pay from ChatGPT, Google AI Mode, etc.).'},
+ {n:'LlamaIndex',tier:'gold',r:1.5,t:1.5,why:'Retrieval / agent framework',desc:'Data framework for RAG & agents — connect, index and retrieve over your own data.'},
+ {n:'Circle',tier:'gold',r:1,t:2.5,why:'Stablecoin / agent commerce',desc:'USDC stablecoin issuer — programmable / agent payment rails.'},
+ {n:'Bloomberg LP',tier:'supporting',r:1.5,t:2,why:'Finance data agents',desc:'Financial data & terminal company; AI over financial data — Finance KB relevance.'},
+ {n:'Anthropic staff (no booth)',tier:'lab',special:true,why:'Catch at side event / networking night',desc:'Maker of Claude & Claude Code. Not exhibiting — only on-stage (gated). Meet staff at off-site side events or the Tue Networking Night.'},
 ];
 
 const QA=[
@@ -357,7 +384,8 @@ function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMo
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function mins(t){t=(t||'').replace('~','').trim();const ap=/[ap]/.exec(t.toLowerCase());const hm=t.match(/(\d+):(\d+)/);if(!hm)return null;let h=+hm[1],m=+hm[2];let pm=ap?ap[0]==='p':(h>=8&&h<=11?false:true);if(pm&&h<12)h+=12;if(!pm&&h===12)h=0;return h*60+m;}
 function nowMin(){const d=new Date();return d.getHours()*60+d.getMinutes();}
-function star(ti){if(TOP.some(p=>ti.indexOf(p)>=0))return 2;if(PICKS.some(p=>ti.indexOf(p)>=0))return 1;return 0;}
+function scoreOf(title){const T=(title||'').toLowerCase();for(const [k,v] of STSCORE){if(T.indexOf(k.toLowerCase())>=0)return v;}return null;}
+function stageStars(v){return v?boothStars(0.5*v.r+0.25*v.co+0.25*v.t):0;}
 
 /* ---------- THEME ---------- */
 function applyTheme(t){document.documentElement.dataset.theme=t;document.getElementById('tgl').textContent=t==='dark'?'🌙':'☀️';
@@ -370,7 +398,10 @@ function planHTML(day,withNow){
   let h=`<div class="card" id="planCard"><div style="color:var(--muted-foreground);font-size:12.5px;margin:2px 0 4px">${day.label} · theme: <b style="color:var(--foreground)">${day.theme}</b></div><div class="tl">`;
   day.plan.forEach((p,i)=>{
     const tag=p.tag?`<span class="tag ${p.tag}">${TAGLABEL[p.tag]||''}</span>`:'';
-    h+=`<div class="row" data-min="${mins(p.t)}" data-i="${i}"><span class="dot dot-${p.tag||'plain'}"></span><div class="rc"><div class="rt"><span class="rtime">${p.t}</span>${tag}</div><div class="d">${p.d}</div></div></div>`;
+    const v=p.tag==='stage'?scoreOf(p.d):null;const s=stageStars(v);
+    const stars=s?`<span class="bstars">${'★'.repeat(s)}</span>`:'';
+    const why=v?`<div class="pwhy">why: ${esc(v.why)}</div>`:'';
+    h+=`<div class="row" data-min="${mins(p.t)}" data-i="${i}"><span class="dot dot-${p.tag||'plain'}"></span><div class="rc"><div class="rt"><span class="rtime">${p.t}</span>${tag}${stars}</div><div class="d">${p.d}</div>${why}</div></div>`;
   });
   return h+'</div></div>';
 }
@@ -417,30 +448,35 @@ function renderStChips(){const c=document.getElementById('stChips');c.innerHTML=
   const p=document.createElement('span');p.className='chip'+(stPicksOnly?' on':'');p.textContent='★ Picks';p.onclick=()=>{stPicksOnly=!stPicksOnly;renderStChips();renderStages();};c.appendChild(p);
 }
 function renderStages(){
-  const list=(EXPO[stDay]||[]).filter(x=>(stFilter==='ALL'||x.s===stFilter)&&(!stPicksOnly||star(x.ti)>0)&&((x.ti+' '+x.sp).toLowerCase().indexOf(stQuery.toLowerCase())>=0));
+  const list=(EXPO[stDay]||[]).filter(x=>(stFilter==='ALL'||x.s===stFilter)&&(!stPicksOnly||scoreOf(x.ti))&&((x.ti+' '+x.sp).toLowerCase().indexOf(stQuery.toLowerCase())>=0));
   const el=document.getElementById('stBody');
   if(!list.length){el.innerHTML='<div class="kn" style="border:0">No talks match.</div>';return;}
-  el.innerHTML=list.map(x=>{const s=star(x.ti);const st=s===2?'<span class="star">★★</span>':s===1?'<span class="star">★</span>':'';
-    return `<div class="item${s?' pk':''}"><span class="sbadge">${x.s}</span><div class="body"><div class="meta"><span>${x.t}</span>${st}</div><div class="ti">${esc(x.ti)}</div></div></div>`;}).join('');
+  el.innerHTML=list.map(x=>{const v=scoreOf(x.ti);const s=stageStars(v);const st=s?`<span class="star">${'★'.repeat(s)}</span>`:'';
+    const why=v?`<div class="stwhy">${esc(v.why)} · <span style="opacity:.8">rel ${half(v.r)} · topic ${half(v.t)} · co ${half(v.co)}</span></div>`:'';
+    return `<div class="item${s?' pk':''}"><span class="sbadge">${x.s}</span><div class="body"><div class="meta"><span>${x.t}</span>${st}</div><div class="ti">${esc(x.ti)}</div>${why}</div></div>`;}).join('');
 }
 renderStagesSeg();renderStChips();renderStages();
 document.getElementById('stSearch').oninput=e=>{stQuery=e.target.value;renderStages();};
 
 /* ---------- BOOTHS ---------- */
+const boothOpen=new Set();
 function renderBooths(){
   const el=document.getElementById('boothBody');el.innerHTML='';let done=0;
   const ranked=BOOTHS.filter(b=>!b.special).sort((a,b)=>boothScore(b)-boothScore(a));
   const order=[...ranked,...BOOTHS.filter(b=>b.special)];
   order.forEach(b=>{const key='b_'+b.n,st=store[key]||{};if(st.done)done++;
     const [tl,tc,C]=TIER[b.tier];const tier=`<span class="pill ${tc}">${tl}</span>`;
+    const op=boothOpen.has(b.n);
     let head,score='';
     if(b.special){head=tier;}
     else{const ns=boothStars(boothScore(b));head=`<span class="bstars">${'★'.repeat(ns)}</span>${tier}`;
       score=`<div class="bscore">rel ${half(b.r)} · topic ${half(b.t)} · co ${half(C)}</div>`;}
     const div=document.createElement('div');div.className='booth'+(st.done?' done':'');
-    div.innerHTML=`<div class="cb">✓</div><div class="bmain"><div class="bname">${b.n} ${head}</div><div class="bwhy">${b.why}</div>${score}
+    div.innerHTML=`<div class="cb">✓</div><div class="bmain"><div class="bname">${b.n} ${head}<span class="cv">${op?'▾ less':'▸ info'}</span></div><div class="bwhy">${b.why}</div>${score}
+      <div class="bdesc" style="display:${op?'block':'none'}">${b.desc||''}</div>
       <div class="bnum"><input placeholder="Booth #" value="${esc(st.num)}" data-k="${key}" data-f="num"><textarea placeholder="Notes / who / follow-up" data-k="${key}" data-f="note">${esc(st.note)}</textarea></div></div>`;
     div.querySelector('.cb').onclick=()=>{store[key]=store[key]||{};store[key].done=!store[key].done;save();renderBooths();};
+    div.querySelector('.bname').onclick=()=>{const d=div.querySelector('.bdesc');const cv=div.querySelector('.cv');const now=d.style.display==='none';d.style.display=now?'block':'none';cv.textContent=now?'▾ less':'▸ info';if(now)boothOpen.add(b.n);else boothOpen.delete(b.n);};
     el.appendChild(div);});
   el.querySelectorAll('input,textarea').forEach(inp=>{inp.oninput=()=>{const k=inp.dataset.k;store[k]=store[k]||{};store[k][inp.dataset.f]=inp.value;save();
     if(inp.tagName==='TEXTAREA'){inp.style.height='auto';inp.style.height=inp.scrollHeight+'px';}};
